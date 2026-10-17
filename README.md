@@ -1,42 +1,106 @@
-# EasySave — version publique
+# EasySave — Backup Job Manager
 
-Projet de gestion de sauvegardes, présenté sous la forme d’une arborescence anonymisée.
+A desktop backup application for creating, running and monitoring full or differential file-backup jobs through a graphical interface or command-line mode.
 
-## Confidentialité et anonymisation
+Users define source and destination locations, choose a backup mode and follow the execution of their jobs. The project combines a desktop interface with a backup engine, progress tracking, logging and coordination rules for concurrent transfers.
 
-Ce dépôt est une présentation publique de la structure du projet. **Tous les contenus d’origine des fichiers conservés ont été supprimés pour des raisons de confidentialité.** Les fichiers de code, de configuration, de migration SQL, de tests, de gouvernance et les artefacts d’ingénierie conservés contiennent uniquement la phrase « Contenu anonymisé ». Cette règle s’applique aussi aux exemples et aux modèles.
+## Users
 
-Les données, secrets, fichiers binaires, dépendances embarquées, résultats générés, wireframes, journaux et dossiers de documentation de work ont été exclus. Les dossiers `.agent` et `.agents`, les fichiers `AGENTS.md` et les métadonnées Git d’origine sont absents. Les noms susceptibles de révéler une entreprise, une personne, un client ou un système interne ont été remplacés par des noms génériques.
+| Role | Use |
+|---|---|
+| Desktop user | Create backup jobs, launch them and inspect progress and results. |
+| Advanced user | Select jobs from the command line and configure backup behavior. |
 
-Seuls ce README et les présentations d’architecture ont un contenu explicatif : ces textes ont été entièrement rédigés pour cette version publique, sans reprendre les détails internes. L’historique Git public commence avec cette version anonymisée.
+## Main features
 
-## Fonctionnement général
+- **Backup definitions.** Manage named jobs with source, destination and backup mode.
+- **Full and differential execution.** Select between complete copying and a differential backup strategy.
+- **Progress and job control.** Follow execution state and control a running job.
+- **Concurrent job coordination.** Coordinate parallel work, file priorities and large transfers.
+- **Operational safeguards.** Coordinate backup activity with configured business-software constraints.
+- **Logging and preferences.** Record activity and expose configurable behavior and localization.
 
-La structure distingue l’application, les modèles, les services, les interfaces et les tests. Les composants de sauvegarde et de journalisation sont représentés par leurs dossiers. Les échanges entre composants et les règles de sauvegarde ne sont pas publiés.
+## Typical workflow
 
-Formats techniques représentés : C# / .NET, XAML, configuration textuelle.
+1. Define a backup job and choose its source, destination and mode.
+2. Launch the selected jobs from the desktop interface or command line.
+3. Monitor progress and respond to pauses or execution problems.
+4. Review the recorded result and activity log.
 
-La copie permet de parcourir l’organisation technique et d’identifier les familles de composants. **Elle ne permet ni d’exécuter ni de reconstruire le projet.** Les configurations et les migrations sont volontairement incomplètes et ne doivent pas être lancées.
+## Project structure
 
-## Organisation
+```text
+easysave-public-version/
+├── .github/
+│   └── workflows/
+├── application/
+│   ├── cli/
+│   ├── models/
+│   │   ├── backup/
+│   │   │   ├── abstractions/
+│   │   │   ├── coordination/
+│   │   │   ├── entities/
+│   │   │   ├── execution/
+│   │   │   ├── io/
+│   │   │   ├── runtime/
+│   │   │   ├── selection/
+│   │   │   ├── services/
+│   │   │   └── shared/
+│   │   ├── businesssoftware/
+│   │   ├── data/
+│   │   │   ├── configuration/
+│   │   │   └── persistence/
+│   │   ├── logger/
+│   │   ├── state/
+│   │   └── utils/
+│   ├── viewmodels/
+│   │   └── services/
+│   ├── views/
+│   │   └── styles/
+│   └── Program.cs
+├── docs/
+│   ├── design/
+│   │   ├── decisions.md
+│   │   ├── requirements.md
+│   │   └── verification.md
+│   └── uml/
+├── logging/
+├── logging-tests/
+├── server/
+│   └── model/
+├── tests/
+├── tools/
+│   └── module-001/
+│       └── Program.cs
+├── translations/
+├── ARCHITECTURE.md
+└── README.md
+```
 
-- `.github/`
-- `CONTRIBUTING.md`
-- `application/`
-- `docs/`
-- `fichier-001.json`
-- `fichier-002.sln`
-- `fichier-003.json`
-- `fichier-004.yml`
-- `global.json`
-- `index.md`
-- `logging/`
-- `logging-tests/`
-- `server/`
-- `tests/`
-- `tools/`
-- `translations/`
+[Complete directory structure](docs/design/structure.md)
 
-Les noms `module-…` et `fichier-…` désignent des éléments renommés. Les extensions des fichiers textuels conservés indiquent leur format d’origine.
+| Area | Responsibility |
+|---|---|
+| Desktop views | Avalonia screens for job creation, execution and preferences. |
+| View models | MVVM state and commands for user interactions. |
+| Backup engine | Job orchestration, file selection and transfer execution. |
+| Coordination services | Priority, large-file and business-software coordination. |
+| Persistence and logging | Job configuration, execution state and activity records. |
+| Platform adapters | Filesystem access and operating-system-dependent behavior. |
 
-Consulter [ARCHITECTURE.md](ARCHITECTURE.md) pour la présentation générale.
+## Technology
+
+C#/.NET, Avalonia, MVVM, JSON/XML logging and automated .NET tests.
+
+## Engineering
+
+- [Architecture](ARCHITECTURE.md)
+- [Product requirements](docs/design/requirements.md)
+- [Design decisions](docs/design/decisions.md)
+- [Verification strategy](docs/design/verification.md)
+
+Backup correctness depends on filesystem permissions, source availability and the reliability of the destination; a completed UI action must not conceal a failed transfer.
+
+---
+
+Source code, operational configuration and project-specific data are withheld for confidentiality.
